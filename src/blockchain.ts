@@ -1,9 +1,21 @@
 import {
   ECDSAProvider,
+  ERC20Abi,
   getRPCProviderOwner,
 } from "@zerodev/sdk";
 import { Magic } from "magic-sdk";
-import { Hex } from "viem";
+import {
+  Hex,
+  createPublicClient,
+  encodeFunctionData,
+  getContract,
+  http,
+} from "viem";
+import {
+  ActionExecutionStatus,
+  SupportedChain,
+  Token,
+} from "./types";
 
 const zerodevProjectId =
   "20dc52a9-91ff-43a9-9d32-1edd3cb23aff";
@@ -41,4 +53,74 @@ export async function executeBasicUserop() {
       opResult.hash as Hex
     );
   console.log("Transaction hash", txHash);
+}
+
+export async function sendTokens(
+  token: Token,
+  to: Hex,
+  humanAmount: number,
+  updateState: (
+    status: ActionExecutionStatus,
+    content: string
+  ) => void
+) {
+  const uintAmount = BigInt(
+    humanAmount * 10 ** token.decimals
+  );
+  const provider = await getECDSAProvider();
+  const opResult =
+    await provider.sendUserOperation({
+      target: token.address,
+      data: encodeFunctionData({
+        abi: ERC20Abi,
+        functionName: "transfer",
+        args: [to, uintAmount],
+      }),
+    });
+  console.log(
+    "Submitted user op with hash",
+    opResult.hash
+  );
+  updateState(
+    ActionExecutionStatus.SUBMITED,
+    opResult.hash
+  );
+  const txHash =
+    await provider.waitForUserOperationTransaction(
+      opResult.hash as Hex
+    );
+  console.log(
+    "Executed userop in transaction with hash",
+    txHash
+  );
+  updateState(
+    ActionExecutionStatus.EXECUTED,
+    txHash
+  );
+}
+
+export async function getTokenHumanBalance(
+  chain: SupportedChain,
+  accountAddress: Hex,
+  token: Token
+) {
+  const publicClient = createPublicClient({
+    chain,
+    transport: http(),
+  });
+
+  const contract = getContract({
+    address: token.address,
+    abi: ERC20Abi,
+    publicClient,
+  });
+
+  const uintBalance =
+    await contract.read.balanceOf([
+      accountAddress,
+    ]);
+
+  return (
+    Number(uintBalance) / 10 ** token.decimals
+  );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   executeBasicUserop,
   getKernelAddress,
@@ -12,6 +12,12 @@ import {
 import { on } from "events";
 import { DummyAccountData } from "./constants";
 import { getAccountData } from "./api";
+import { useNavigate } from "react-router-dom";
+import { CoreFrame } from "./CoreFrame";
+import {
+  GlobalContext,
+  useGlobalContext,
+} from "./GlobalState";
 
 function HistoryAction(props: {
   action: HistoryActionType;
@@ -102,44 +108,64 @@ function Login(props: {
 
   return (
     <div className="loginBar">
-      <button onClick={onLogin}>Log in</button> to
-      maintain access to this account.
+      <button onClick={onLogin}>
+        Log in / Register
+      </button>{" "}
+      please.
     </div>
   );
 }
 
 export function Home() {
-  const [magicAccount, setMagicAccount] =
-    useState<MagicUserMetadata>();
+  const navigate = useNavigate();
+  const { accountAddress, setAccountAddress } =
+    useGlobalContext();
+
   const [accountData, setAccountData] =
     useState<AccountData>(DummyAccountData);
 
-  const isLoggedIn = magicAccount !== undefined;
+  const isLoggedIn = accountAddress !== undefined;
+
+  useEffect(() => {
+    const refreshAccountData = async () => {
+      if (!accountAddress) return;
+
+      const accountData = await getAccountData(
+        accountAddress
+      );
+      setAccountData(accountData);
+    };
+
+    refreshAccountData();
+  }, [accountAddress]);
 
   const onLoggedIn = async () => {
-    setMagicAccount(await magic.user.getInfo());
     const accountAddress =
       await getKernelAddress();
-    const accountData = await getAccountData(
-      accountAddress
-    );
-    setAccountData(accountData);
+
+    setAccountAddress(accountAddress);
   };
 
-  const onTopUp = () => {};
+  const onTopUp = () => {
+    navigate("/topup");
+  };
 
-  const onSend = () => {};
+  const onSend = () => {
+    navigate("/sendOnChain");
+  };
+
+  if (!isLoggedIn)
+    return (
+      <CoreFrame title="Droplet Finance">
+        <Login onLoggedIn={onLoggedIn} />
+      </CoreFrame>
+    );
 
   return (
     <div>
-      {!isLoggedIn && (
-        <Login onLoggedIn={onLoggedIn} />
-      )}
-      {magicAccount && (
-        <button onClick={executeBasicUserop}>
-          Execute a basic user op
-        </button>
-      )}
+      <button onClick={executeBasicUserop}>
+        Execute a basic user op
+      </button>
       <Dashboard
         balance={accountData.balance}
         onTopUp={onTopUp}

@@ -10,6 +10,7 @@ a,
 button {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana,
     sans-serif;
+  margin: 0;
 }
 
 a {
@@ -19,6 +20,16 @@ a {
 button {
   border: none;
   padding: 4px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+input {
+  padding: 4px;
+  width: 100%;
 }
 
 .bigButton {
@@ -53,4 +64,33 @@ button {
 
 .loginBar button {
   margin-right: 8px;
+}
+
+.chainSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chainSelect div {
+  border: 1px solid white;
+  padding: 16px;
+}
+
+.tokenSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tokenSelect div {
+  border: 1px solid white;
+  padding: 16px;
+}
+
+.sendTokensForm {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }

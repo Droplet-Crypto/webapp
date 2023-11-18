@@ -13,9 +13,9 @@ export async function getAccountData(
     balance: parseFloat(json.balance),
     history: json.history.map(
       (jsonAction: any) => ({
-        actionType: jsonAction.actionType,
+        actionType: jsonAction.action_type,
         usdAmount: parseFloat(
-          jsonAction.usdAmount
+          jsonAction.usd_amount
         ),
         message: jsonAction.message,
         link: jsonAction.link,
