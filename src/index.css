@@ -1,0 +1,56 @@
+body {
+  background-color: darkslateblue;
+  color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana,
+    sans-serif;
+}
+
+p,
+a,
+button {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana,
+    sans-serif;
+}
+
+a {
+  color: white;
+}
+
+button {
+  border: none;
+  padding: 4px;
+}
+
+.bigButton {
+  padding: 16px;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboardButtons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.history div {
+  border: 1px solid white;
+  padding: 16px;
+}
+
+.loginBar {
+  display: flex;
+  justify-content: center;
+}
+
+.loginBar button {
+  margin-right: 8px;
+}
