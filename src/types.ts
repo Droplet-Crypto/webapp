@@ -10,7 +10,7 @@ export type SupportedChain =
 export type SupportedChainIdsType =
   (typeof SupportedChainIds)[0];
 
-export interface HistoryActionType {
+export interface HistoryAction {
   actionType: "receive" | "send";
   usdAmount: number;
   comment: string | null;
@@ -19,16 +19,21 @@ export interface HistoryActionType {
 
 export interface AccountData {
   balance: number;
-  history: HistoryActionType[];
+  history: HistoryAction[];
 }
 
 export interface GlobalState {
   accountAddress: Hex | undefined;
   setAccountAddress: (address: Hex) => void;
+  accountData: AccountData;
+  setAccountData: (
+    accountData: AccountData
+  ) => void;
 }
 
 export interface GlobalStateStorage {
   accountAddress: Hex | undefined;
+  accountData: AccountData | undefined;
 }
 
 export interface Token {
@@ -42,7 +47,6 @@ export type ChainsSettingsType = Record<
   {
     chain: SupportedChain;
     etherscanBaseUrl: string;
-    jiffyscanBaseUrl: string;
     rpc: string;
     tokens: Token[];
   }

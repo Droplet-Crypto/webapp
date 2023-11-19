@@ -92,8 +92,8 @@ function SendTokensForm(props: {
   const [stringAmount, setStringAmount] =
     useState("");
   const [message, setMessage] = useState("");
-  const [userOpHash, setUserOpHash] =
-    useState<Hex>();
+  const [txHash, setTxHash] = useState<Hex>();
+  const [sending, setSending] = useState(false);
 
   const chainSettings =
     ChainsSettings[props.chain.id];
@@ -105,14 +105,14 @@ function SendTokensForm(props: {
     if (
       status === ActionExecutionStatus.SUBMITED
     ) {
-      setUserOpHash(content as Hex);
       setMessage(
-        "Waiting for operation execution..."
+        "Waiting for action execution..."
       );
     } else if (
       status === ActionExecutionStatus.EXECUTED
     ) {
       setMessage("Tokens have been transferred!");
+      setTxHash(content as Hex);
     }
   };
 
@@ -133,12 +133,14 @@ function SendTokensForm(props: {
     setMessage(
       "Preparing tokens to be transferred..."
     );
+    setSending(true);
     await sendTokens(
       props.token,
       checksumedRecipient,
       humanAmount,
       updateExecutionState
     );
+    setSending(false);
   };
 
   return (
@@ -166,14 +168,16 @@ function SendTokensForm(props: {
         }
       />
       {message && <p>{message}</p>}
-      {userOpHash && (
+      {txHash && (
         <a
-          href={`${chainSettings.jiffyscanBaseUrl}/userOpHash/${userOpHash}`}
+          href={`${chainSettings.etherscanBaseUrl}/tx/${txHash}`}
         >
-          Details of the operation
+          Details of the action
         </a>
       )}
-      <button onClick={sendIt}>Send it!</button>
+      <button onClick={sendIt} disabled={sending}>
+        Send it!
+      </button>
     </div>
   );
 }
@@ -249,7 +253,10 @@ export function SendOnChain() {
     return (
       <CoreFrame
         title="Send tokens"
-        goBack={() => setToken(undefined)}
+        goBack={() => {
+          setToken(undefined);
+          setBalance(undefined);
+        }}
       >
         <p>Loading...</p>
       </CoreFrame>
@@ -260,7 +267,10 @@ export function SendOnChain() {
     return (
       <CoreFrame
         title="Send tokens"
-        goBack={() => setToken(undefined)}
+        goBack={() => {
+          setToken(undefined);
+          setBalance(undefined);
+        }}
       >
         <p>You don't have any {token.symbol}.</p>
       </CoreFrame>
@@ -270,7 +280,10 @@ export function SendOnChain() {
   return (
     <CoreFrame
       title="Send tokens"
-      goBack={() => setToken(undefined)}
+      goBack={() => {
+        setToken(undefined);
+        setBalance(undefined);
+      }}
     >
       <SendTokensForm
         chain={chain}

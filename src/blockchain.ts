@@ -68,6 +68,7 @@ export async function sendTokens(
     humanAmount * 10 ** token.decimals
   );
   const provider = await getECDSAProvider();
+  console.log("Sending a user op");
   const opResult =
     await provider.sendUserOperation({
       target: token.address,

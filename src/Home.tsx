@@ -4,23 +4,18 @@ import {
   getKernelAddress,
   magic,
 } from "./blockchain";
-import { MagicUserMetadata } from "magic-sdk";
 import {
   AccountData,
-  HistoryActionType,
+  HistoryAction,
 } from "./types";
-import { on } from "events";
 import { DummyAccountData } from "./constants";
 import { getAccountData } from "./api";
 import { useNavigate } from "react-router-dom";
 import { CoreFrame } from "./CoreFrame";
-import {
-  GlobalContext,
-  useGlobalContext,
-} from "./GlobalState";
+import { useGlobalContext } from "./GlobalState";
 
-function HistoryAction(props: {
-  action: HistoryActionType;
+function HistoryActionComponent(props: {
+  action: HistoryAction;
 }) {
   return (
     <div>
@@ -39,13 +34,13 @@ function HistoryAction(props: {
 }
 
 function History(props: {
-  history: HistoryActionType[];
+  history: HistoryAction[];
 }) {
   return (
     <div className="history">
       <p>History:</p>
       {props.history.map((action, index) => (
-        <HistoryAction
+        <HistoryActionComponent
           key={index}
           action={action}
         />
@@ -118,11 +113,12 @@ function Login(props: {
 
 export function Home() {
   const navigate = useNavigate();
-  const { accountAddress, setAccountAddress } =
-    useGlobalContext();
-
-  const [accountData, setAccountData] =
-    useState<AccountData>(DummyAccountData);
+  const {
+    accountAddress,
+    setAccountAddress,
+    accountData,
+    setAccountData,
+  } = useGlobalContext();
 
   const isLoggedIn = accountAddress !== undefined;
 

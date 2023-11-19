@@ -23,6 +23,8 @@ export const DummyAccountData: AccountData = {
 export const DummyGlobalState: GlobalState = {
   accountAddress: undefined,
   setAccountAddress(address) {},
+  accountData: DummyAccountData,
+  setAccountData(accountData) {},
 };
 
 export const SupportedChains = [polygonMumbai];
@@ -49,7 +51,6 @@ export const ChainsSettings: ChainsSettingsType =
       chain: polygonMumbai,
       etherscanBaseUrl:
         "https://mumbai.polygonscan.com",
-      jiffyscanBaseUrl: "https://jiffyscan.xyz",
       rpc: "https://mumbai.polygonscan.com",
       tokens: [
         {

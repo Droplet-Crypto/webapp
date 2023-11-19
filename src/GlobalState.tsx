@@ -4,10 +4,14 @@ import React, {
   useState,
 } from "react";
 import {
+  AccountData,
   GlobalState,
   GlobalStateStorage,
 } from "./types";
-import { DummyGlobalState } from "./constants";
+import {
+  DummyAccountData,
+  DummyGlobalState,
+} from "./constants";
 import { Hex } from "viem";
 
 export const GlobalContext =
@@ -28,14 +32,19 @@ export const GlobalProvider = ({
       ) || "{}"
     );
 
-  const [accountAddress, setAccountAddressState] =
+  const [accountAddress, setAccountAddress] =
     useState<Hex | undefined>(
       stateInStorage.accountAddress
     );
 
+  const [accountData, setAccountData] = useState<
+    AccountData | undefined
+  >(stateInStorage.accountData);
+
   const saveState = () => {
     const stateToStorage: GlobalStateStorage = {
-      accountAddress: accountAddress,
+      accountAddress,
+      accountData,
     };
     console.log("Saving state", stateToStorage);
     window.localStorage.setItem(
@@ -44,13 +53,11 @@ export const GlobalProvider = ({
     );
   };
 
-  const setAccountAddress = (address: Hex) => {
-    setAccountAddressState(address);
-  };
-
   const state: GlobalState = {
     accountAddress,
     setAccountAddress,
+    accountData: accountData || DummyAccountData,
+    setAccountData,
   };
 
   saveState();
