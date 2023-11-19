@@ -159,9 +159,6 @@ export function Home() {
 
   return (
     <div>
-      <button onClick={executeBasicUserop}>
-        Execute a basic user op
-      </button>
       <Dashboard
         balance={accountData.balance}
         onTopUp={onTopUp}
